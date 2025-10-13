@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "qWf7DqGQUbs=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\RC_Student_Lab\\source\\repos\\PROG6212-CMCS\\PROG6212-CMCS.Server\\PROG6212-CMCS.Server.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\RC_Student_Lab\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.8\\microsoft.aspnetcore.openapi.9.0.8.nupkg.sha512",
+    "C:\\Users\\RC_Student_Lab\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\9.0.9\\microsoft.aspnetcore.spaproxy.9.0.9.nupkg.sha512",
+    "C:\\Users\\RC_Student_Lab\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

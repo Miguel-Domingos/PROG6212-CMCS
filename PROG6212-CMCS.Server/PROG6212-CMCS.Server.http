@@ -1,0 +1,6 @@
+@PROG6212_CMCS.Server_HostAddress = http://localhost:5039
+
+GET {{PROG6212_CMCS.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
