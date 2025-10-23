@@ -1,1 +1,20 @@
-.vs
+# Visual Studio
+.vs/
+
+# Server (C#)
+PROG6212-CMCS.Server/bin/
+PROG6212-CMCS.Server/obj/
+PROG6212-CMCS.Server/*.user
+PROG6212-CMCS.Server/*.suo
+PROG6212-CMCS.Server/*.log
+
+# Client (Vue/Node)
+prog6212-cmcs.client/node_modules/
+prog6212-cmcs.client/dist/
+prog6212-cmcs.client/package-lock.json
+prog6212-cmcs.client/*.log
+prog6212-cmcs.client/.env
+
+# Arquivos temporários do sistema
+*.DS_Store
+*.tmp
