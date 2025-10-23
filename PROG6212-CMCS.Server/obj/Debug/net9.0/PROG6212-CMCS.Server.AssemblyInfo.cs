@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PROG6212-CMCS.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d562f28af95271b5585f5919584b2dbbf739c7dd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3b84de7a942a3132e2f90fefb7196c04ee706cd1")]
 [assembly: System.Reflection.AssemblyProductAttribute("PROG6212-CMCS.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PROG6212-CMCS.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

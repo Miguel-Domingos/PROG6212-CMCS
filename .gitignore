@@ -18,3 +18,4 @@ prog6212-cmcs.client/.env
 # Arquivos temporários do sistema
 *.DS_Store
 *.tmp
+.idea
