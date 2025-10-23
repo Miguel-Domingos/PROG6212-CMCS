@@ -1,0 +1,10 @@
+{
+"SpaProxyServer": {
+"ServerUrl": "https://localhost:50253",
+"RedirectUrl": "",
+"LaunchCommand": "npm run dev",
+"WorkingDirectory": "C:\\Users\\RC_Student_Lab\\source\\repos\\PROG6212-CMCS\\PROG6212-CMCS.Server\\..\\prog6212-cmcs.client",
+"MaxTimeoutInSeconds": "120",
+"KeepRunning": "false"
+}
+}
