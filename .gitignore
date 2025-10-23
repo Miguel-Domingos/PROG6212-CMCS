@@ -11,6 +11,7 @@ PROG6212-CMCS.Server/*.log
 # Client (Vue/Node)
 prog6212-cmcs.client/node_modules/
 prog6212-cmcs.client/dist/
+prog6212-cmcs.client/obj/
 prog6212-cmcs.client/package-lock.json
 prog6212-cmcs.client/*.log
 prog6212-cmcs.client/.env
