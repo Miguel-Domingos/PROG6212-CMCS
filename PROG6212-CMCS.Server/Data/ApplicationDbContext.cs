@@ -69,6 +69,18 @@ namespace PROG6212_CMCS.Server.Data
                 }
             );
 
+            // ---- LECTURER PROFILE (UserId = 4) ----
+            modelBuilder.Entity<Lecturer>().HasData(
+                new Lecturer
+                {
+                    LecturerId = 1,
+                    UserId = 4,
+                    BankDetails = "FNB - Acc: 1234567890",
+                    HourlyRate = 450.00m
+                }
+            );
+
+
             // ---- RELACIONAMENTOS ----
             modelBuilder.Entity<Lecturer>()
                 .HasOne(l => l.User)

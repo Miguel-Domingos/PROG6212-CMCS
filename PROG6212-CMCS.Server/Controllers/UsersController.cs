@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PROG6212_CMCS.Server.Data;
 using PROG6212_CMCS.Server.Models;
 
@@ -12,7 +13,15 @@ namespace PROG6212_CMCS.Server.Controllers
         public UsersController(ApplicationDbContext context) => _context = context;
 
         [HttpGet]
-        public IActionResult GetAll() => Ok(_context.Users.ToList());
+        public IActionResult GetAll()
+        {
+            var users = _context.Users
+                .Include(u => u.Role)               // inclui o Role
+                .Include(u => u.LecturerProfile)    // inclui o LecturerProfile
+                .ToList();
+
+            return Ok(users);
+        }
 
         [HttpPost]
         public IActionResult Create(User user)

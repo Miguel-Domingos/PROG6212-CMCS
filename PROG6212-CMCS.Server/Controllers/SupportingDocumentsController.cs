@@ -56,5 +56,20 @@ namespace PROG6212_CMCS.Server.Controllers
             var docs = _context.SupportingDocuments.Where(d => d.ClaimId == claimId).ToList();
             return Ok(docs);
         }
+
+        [HttpGet("download/{id}")]
+        public IActionResult DownloadDocument(int id)
+        {
+            var doc = _context.SupportingDocuments.FirstOrDefault(d => d.DocumentId == id);
+            if (doc == null) return NotFound("Document not found");
+
+            var filePath = Path.Combine(_env.WebRootPath ?? "wwwroot", doc.FilePath.TrimStart('/'));
+            if (!System.IO.File.Exists(filePath)) return NotFound("File not found on disk");
+
+            var stream = System.IO.File.OpenRead(filePath);
+            return File(stream, doc.ContentType ?? "application/octet-stream", doc.FileName);
+        }
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Models/Role.cs
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace PROG6212_CMCS.Server.Models
 {
@@ -17,6 +18,7 @@ namespace PROG6212_CMCS.Server.Models
 
         public string? Description { get; set; }
 
+        [JsonIgnore]
         public ICollection<User>? Users { get; set; }
     }
 }

@@ -31,10 +31,10 @@ namespace PROG6212_CMCS.Server.Controllers
                     return BadRequest("Email and password are required.");
 
                 var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
-                if (user == null) return Unauthorized("User not found.");
+                if (user == null) return Unauthorized("Invalid Credentials");
 
                 if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-                    return Unauthorized("Invalid password.");
+                    return Unauthorized("Invalid Credentials.");
 
                 var role = _context.Roles.FirstOrDefault(r => r.RoleId == user.RoleId);
                 var token = GenerateJwtToken(user, role?.RoleName ?? "Unknown");

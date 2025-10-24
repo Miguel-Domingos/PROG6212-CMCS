@@ -3,14 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace PROG6212_CMCS.Server.Migrations
 {
-    /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -150,24 +146,47 @@ namespace PROG6212_CMCS.Server.Migrations
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "RoleId", "AccessLevel", "Description", "RoleName" },
-                values: new object[,]
-                {
-                    { 1, 1, null, "Admin" },
-                    { 2, 2, null, "AcademicManager" },
-                    { 3, 3, null, "ProgrammeCoordinator" },
-                    { 4, 4, null, "Lecturer" }
-                });
+                values: new object[] { 1, 1, null, "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "RoleId", "AccessLevel", "Description", "RoleName" },
+                values: new object[] { 2, 2, null, "AcademicManager" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "RoleId", "AccessLevel", "Description", "RoleName" },
+                values: new object[] { 3, 3, null, "ProgrammeCoordinator" });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "RoleId", "AccessLevel", "Description", "RoleName" },
+                values: new object[] { 4, 4, null, "Lecturer" });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
-                values: new object[,]
-                {
-                    { 1, "admin@cmcs.com", "System Admin", "$2a$11$BXTCPkB68w94H7eZTuYyh.Te6j2gZP6QYFNyo/ptDiD9sMqzEtCxC", 1 },
-                    { 2, "manager@cmcs.com", "Academic Manager", "$2a$11$qVmDE.1A8Z95oeBeGrr6megTbyCRMxKS9qgS1Xd.VvMz0CuWq69Ni", 2 },
-                    { 3, "coordinator@cmcs.com", "Programme Coordinator", "$2a$11$arMByAF8wsVQFfFhwGVpEODIasrvmbfoW2X0bMVPX9FmPqu1Hv//y", 3 },
-                    { 4, "lecturer@cmcs.com", "Lecturer", "$2a$11$97Wcs4uEFYlR7wOmd2x81.0gy7dvUpvwRpIttIILN3RxiiaLl.OB2", 4 }
-                });
+                values: new object[] { 1, "admin@cmcs.com", "System Admin", "$2a$11$TZOMQNvqAcYrfHwGbrvOl.7unq5tPF/Iv4z7csjG26bZElV5Swg6K", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
+                values: new object[] { 2, "manager@cmcs.com", "Academic Manager", "$2a$11$GbDygJoNLGp941w3N87yNuLI8/dj5/YHIWLKVWPsHJOB5Fh8fGXh6", 2 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
+                values: new object[] { 3, "coordinator@cmcs.com", "Programme Coordinator", "$2a$11$ewYZ5PIxCNlFY7eVUWfZveqJqYeN9uUzc.pEBkvZKCnhoez7tEv02", 3 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
+                values: new object[] { 4, "lecturer@cmcs.com", "Lecturer", "$2a$11$FAU3ziEwhoFsSF1BiWzEFOZ4v/I01E82H4Kim4uyk2kpSyEk74oeW", 4 });
+
+            migrationBuilder.InsertData(
+                table: "Lecturers",
+                columns: new[] { "LecturerId", "BankDetails", "HourlyRate", "UserId" },
+                values: new object[] { 1, "FNB - Acc: 1234567890", 450.00m, 4 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClaimApprovals_ApproverId",
@@ -201,7 +220,6 @@ namespace PROG6212_CMCS.Server.Migrations
                 column: "RoleId");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

@@ -11,14 +11,13 @@ using PROG6212_CMCS.Server.Data;
 namespace PROG6212_CMCS.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251023194830_InitialCreate")]
+    [Migration("20251024090403_InitialCreate")]
     partial class InitialCreate
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.29");
 
             modelBuilder.Entity("PROG6212_CMCS.Server.Models.Claim", b =>
                 {
@@ -104,6 +103,15 @@ namespace PROG6212_CMCS.Server.Migrations
                         .IsUnique();
 
                     b.ToTable("Lecturers");
+
+                    b.HasData(
+                        new
+                        {
+                            LecturerId = 1,
+                            BankDetails = "FNB - Acc: 1234567890",
+                            HourlyRate = 450.00m,
+                            UserId = 4
+                        });
                 });
 
             modelBuilder.Entity("PROG6212_CMCS.Server.Models.Role", b =>
@@ -220,7 +228,7 @@ namespace PROG6212_CMCS.Server.Migrations
                             UserId = 1,
                             Email = "admin@cmcs.com",
                             Name = "System Admin",
-                            PasswordHash = "$2a$11$BXTCPkB68w94H7eZTuYyh.Te6j2gZP6QYFNyo/ptDiD9sMqzEtCxC",
+                            PasswordHash = "$2a$11$TZOMQNvqAcYrfHwGbrvOl.7unq5tPF/Iv4z7csjG26bZElV5Swg6K",
                             RoleId = 1
                         },
                         new
@@ -228,7 +236,7 @@ namespace PROG6212_CMCS.Server.Migrations
                             UserId = 2,
                             Email = "manager@cmcs.com",
                             Name = "Academic Manager",
-                            PasswordHash = "$2a$11$qVmDE.1A8Z95oeBeGrr6megTbyCRMxKS9qgS1Xd.VvMz0CuWq69Ni",
+                            PasswordHash = "$2a$11$GbDygJoNLGp941w3N87yNuLI8/dj5/YHIWLKVWPsHJOB5Fh8fGXh6",
                             RoleId = 2
                         },
                         new
@@ -236,7 +244,7 @@ namespace PROG6212_CMCS.Server.Migrations
                             UserId = 3,
                             Email = "coordinator@cmcs.com",
                             Name = "Programme Coordinator",
-                            PasswordHash = "$2a$11$arMByAF8wsVQFfFhwGVpEODIasrvmbfoW2X0bMVPX9FmPqu1Hv//y",
+                            PasswordHash = "$2a$11$ewYZ5PIxCNlFY7eVUWfZveqJqYeN9uUzc.pEBkvZKCnhoez7tEv02",
                             RoleId = 3
                         },
                         new
@@ -244,7 +252,7 @@ namespace PROG6212_CMCS.Server.Migrations
                             UserId = 4,
                             Email = "lecturer@cmcs.com",
                             Name = "Lecturer",
-                            PasswordHash = "$2a$11$97Wcs4uEFYlR7wOmd2x81.0gy7dvUpvwRpIttIILN3RxiiaLl.OB2",
+                            PasswordHash = "$2a$11$FAU3ziEwhoFsSF1BiWzEFOZ4v/I01E82H4Kim4uyk2kpSyEk74oeW",
                             RoleId = 4
                         });
                 });

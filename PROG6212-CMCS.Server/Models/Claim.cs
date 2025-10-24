@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PROG6212_CMCS.Server.Models
 {
@@ -13,6 +14,8 @@ namespace PROG6212_CMCS.Server.Models
 
         [ForeignKey(nameof(Lecturer))]
         public int LecturerId { get; set; }
+
+        [JsonIgnore]
         public Lecturer? Lecturer { get; set; }
 
         public DateTime ClaimDate { get; set; } = DateTime.UtcNow;

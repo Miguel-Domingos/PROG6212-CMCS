@@ -1,23 +1,26 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PROG6212_CMCS.Server.Data;
 using PROG6212_CMCS.Server.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace PROG6212_CMCS.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class ClaimsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         public ClaimsController(ApplicationDbContext context) => _context = context;
 
+        // 🔹 1. Retorna todas as claims (admin ou coord)
         [HttpGet]
         public IActionResult GetAll()
         {
             var claims = _context.Claims
                 .Include(c => c.Lecturer)
-                .ThenInclude(l => l.User)
+                    .ThenInclude(l => l.User)
                 .Include(c => c.Documents)
                 .Include(c => c.Approvals)
                 .ToList();
@@ -25,19 +28,43 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claims);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        // 🔹 2. Retorna apenas as claims do lecturer logado
+        [HttpGet("mine")]
+        public IActionResult GetMine()
         {
-            var claim = _context.Claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            if (userIdClaim == null) return Unauthorized();
+
+            var userId = int.Parse(userIdClaim);
+
+            var claims = _context.Claims
                 .Include(c => c.Lecturer)
+                    .ThenInclude(l => l.User)
                 .Include(c => c.Documents)
                 .Include(c => c.Approvals)
-                .FirstOrDefault(c => c.ClaimId == id);
+                .Where(c => c.Lecturer.UserId == userId)
+                .ToList();
 
-            if (claim == null) return NotFound();
-            return Ok(claim);
+            return Ok(claims);
         }
 
+        // 🔹 3. Retorna apenas claims pendentes (para coordenador)
+        [HttpGet("pending")]
+        public IActionResult GetPendingClaims()
+        {
+            var claims = _context.Claims
+                .Include(c => c.Lecturer)
+                    .ThenInclude(l => l.User)
+                .Include(c => c.Documents)
+                .Include(c => c.Approvals)
+                .Where(c => c.Status == ClaimStatus.Pending)
+                .OrderByDescending(c => c.ClaimDate)
+                .ToList();
+
+            return Ok(claims);
+        }
+
+        // 🔹 4. Cria claim (para lecturer)
         [HttpPost]
         public IActionResult Create(Claim claim)
         {
@@ -54,20 +81,82 @@ namespace PROG6212_CMCS.Server.Controllers
             return CreatedAtAction(nameof(GetById), new { id = claim.ClaimId }, claim);
         }
 
-        [HttpPut("{id}/status")]
-        public IActionResult UpdateStatus(int id, [FromBody] string status)
+        // 🔹 5. Retorna claim específica
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
         {
+            var claim = _context.Claims
+                .Include(c => c.Lecturer)
+                .Include(c => c.Documents)
+                .Include(c => c.Approvals)
+                .FirstOrDefault(c => c.ClaimId == id);
+
+            if (claim == null) return NotFound();
+            return Ok(claim);
+        }
+
+        // 🔹 6. Aprovar claim (usando JWT)
+        [HttpPost("{id}/approve")]
+        public IActionResult ApproveClaim(int id, [FromBody] string? comments = null)
+        {
+            var userId = GetUserIdFromToken();
+            if (userId == null) return Unauthorized();
+
             var claim = _context.Claims.Find(id);
             if (claim == null) return NotFound();
 
-            if (Enum.TryParse(status, true, out ClaimStatus newStatus))
-            {
-                claim.Status = newStatus;
-                _context.SaveChanges();
-                return Ok(claim);
-            }
+            if (claim.Status != ClaimStatus.Pending)
+                return BadRequest("Only pending claims can be approved.");
 
-            return BadRequest("Invalid status value");
+            claim.Status = ClaimStatus.Approved;
+
+            _context.ClaimApprovals.Add(new ClaimApproval
+            {
+                ClaimId = id,
+                ApprovalDate = DateTime.UtcNow,
+                Decision = ApprovalDecision.Approved,
+                Comments = comments ?? "Approved by coordinator",
+                ApproverId = userId.Value
+            });
+
+            _context.SaveChanges();
+            return Ok(new { message = "Claim approved successfully", claim });
+        }
+
+        // 🔹 7. Rejeitar claim (usando JWT)
+        [HttpPost("{id}/reject")]
+        public IActionResult RejectClaim(int id, [FromBody] string? comments = null)
+        {
+            var userId = GetUserIdFromToken();
+            if (userId == null) return Unauthorized();
+
+            var claim = _context.Claims.Find(id);
+            if (claim == null) return NotFound();
+
+            if (claim.Status != ClaimStatus.Pending)
+                return BadRequest("Only pending claims can be rejected.");
+
+            claim.Status = ClaimStatus.Rejected;
+
+            _context.ClaimApprovals.Add(new ClaimApproval
+            {
+                ClaimId = id,
+                ApprovalDate = DateTime.UtcNow,
+                Decision = ApprovalDecision.Rejected,
+                Comments = comments ?? "Rejected by coordinator",
+                ApproverId = userId.Value
+            });
+
+            _context.SaveChanges();
+            return Ok(new { message = "Claim rejected successfully", claim });
+        }
+
+        // 🔹 8. Helper: pega ID do usuário logado
+        private int? GetUserIdFromToken()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;
+            if (userIdClaim == null) return null;
+            return int.Parse(userIdClaim);
         }
     }
 }
