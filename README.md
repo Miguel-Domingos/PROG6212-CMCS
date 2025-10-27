@@ -98,10 +98,10 @@ dotnet run
 
 | Role | Email | Password |
 |------|--------|----------|
-| Admin | admin@cmcs.com | admin123 |
-| Academic Manager | manager@cmcs.com | manager123 |
-| Programme Coordinator | coordinator@cmcs.com | coordinator123 |
-| Lecturer | lecturer@cmcs.com | lecturer123 |
+| Admin | admin@gmail.com | 12345678 |
+| Academic Manager | manager@gmail.com | 12345678 |
+| Programme Coordinator | coordinator@gmail.com | 12345678 |
+| Lecturer | lecturer@gmail.com | 12345678 |
 
 ---
 
