@@ -21,7 +21,7 @@ namespace PROG6212_CMCS.Server.Controllers
             _config = config;
         }
 
-        // ✅ LOGIN
+
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
@@ -31,6 +31,7 @@ namespace PROG6212_CMCS.Server.Controllers
                     return BadRequest("Email and password are required.");
 
                 var user = _context.Users.FirstOrDefault(u => u.Email == request.Email);
+                var profile = _context.Lecturers.FirstOrDefault(l => l.UserId == user.UserId);
                 if (user == null) return Unauthorized("Invalid Credentials");
 
                 if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
@@ -48,7 +49,8 @@ namespace PROG6212_CMCS.Server.Controllers
                         user.UserId,
                         user.Name,
                         user.Email,
-                        Role = role?.RoleName
+                        Role = role?.RoleName,
+                        LecturerProfile = profile
                     }
                 });
             }
@@ -58,7 +60,6 @@ namespace PROG6212_CMCS.Server.Controllers
             }
         }
 
-        // ✅ REGISTER
         [HttpPost("register")]
         public IActionResult Register([FromBody] RegisterRequest request)
         {
@@ -95,7 +96,7 @@ namespace PROG6212_CMCS.Server.Controllers
             }
         }
 
-        // 🔒 GERA O TOKEN JWT
+
         private string GenerateJwtToken(User user, string role)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

@@ -11,7 +11,7 @@ using PROG6212_CMCS.Server.Data;
 namespace PROG6212_CMCS.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251024090403_InitialCreate")]
+    [Migration("20251118081506_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,9 @@ namespace PROG6212_CMCS.Server.Migrations
 
                     b.Property<DateTime>("ClaimDate")
                         .HasColumnType("TEXT");
+
+                    b.Property<decimal>("HourlyRate")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("HoursWorked")
                         .HasColumnType("decimal(10,2)");
@@ -91,9 +94,6 @@ namespace PROG6212_CMCS.Server.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("HourlyRate")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
@@ -108,8 +108,7 @@ namespace PROG6212_CMCS.Server.Migrations
                         new
                         {
                             LecturerId = 1,
-                            BankDetails = "FNB - Acc: 1234567890",
-                            HourlyRate = 450.00m,
+                            BankDetails = "ABSA - Acc: 0626673286",
                             UserId = 4
                         });
                 });
@@ -226,33 +225,33 @@ namespace PROG6212_CMCS.Server.Migrations
                         new
                         {
                             UserId = 1,
-                            Email = "admin@cmcs.com",
-                            Name = "System Admin",
-                            PasswordHash = "$2a$11$TZOMQNvqAcYrfHwGbrvOl.7unq5tPF/Iv4z7csjG26bZElV5Swg6K",
+                            Email = "admin@gmail.com",
+                            Name = "Admin",
+                            PasswordHash = "$2a$11$LC70hkVjkSDMOyEAfWdEf.j2zF4spJcQ4ltFybJi74JyW4uB0WmlO",
                             RoleId = 1
                         },
                         new
                         {
                             UserId = 2,
-                            Email = "manager@cmcs.com",
+                            Email = "manager@gmail.com",
                             Name = "Academic Manager",
-                            PasswordHash = "$2a$11$GbDygJoNLGp941w3N87yNuLI8/dj5/YHIWLKVWPsHJOB5Fh8fGXh6",
+                            PasswordHash = "$2a$11$86OZcMZPNBlUIxK543zZleXkYhRtHnogmvjTgE5nY1YS41bimIggW",
                             RoleId = 2
                         },
                         new
                         {
                             UserId = 3,
-                            Email = "coordinator@cmcs.com",
+                            Email = "coordinator@gmail.com",
                             Name = "Programme Coordinator",
-                            PasswordHash = "$2a$11$ewYZ5PIxCNlFY7eVUWfZveqJqYeN9uUzc.pEBkvZKCnhoez7tEv02",
+                            PasswordHash = "$2a$11$S81MIziaHpTPJIVdxtSGdeteCc1OKtHU1lE6AxumWS1ypO3sfkEQS",
                             RoleId = 3
                         },
                         new
                         {
                             UserId = 4,
-                            Email = "lecturer@cmcs.com",
+                            Email = "lecturer@gmail.com",
                             Name = "Lecturer",
-                            PasswordHash = "$2a$11$FAU3ziEwhoFsSF1BiWzEFOZ4v/I01E82H4Kim4uyk2kpSyEk74oeW",
+                            PasswordHash = "$2a$11$u65twpa4gMxvzzCy2IsgZOaSAKd2C95xovcxq63b47dmrGsqirdTC",
                             RoleId = 4
                         });
                 });

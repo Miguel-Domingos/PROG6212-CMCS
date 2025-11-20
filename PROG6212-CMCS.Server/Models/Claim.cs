@@ -20,11 +20,15 @@ namespace PROG6212_CMCS.Server.Models
 
         public DateTime ClaimDate { get; set; } = DateTime.UtcNow;
 
-        // horas trabalhadas (suporta frações)
+        // horas trabalhadas
         [Column(TypeName = "decimal(10,2)")]
         public decimal HoursWorked { get; set; }
 
-        // calculado: HoursWorked * Lecturer.HourlyRate (podes popular no controller)
+        // 🔥 NOVO → enviado pelo front
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal HourlyRate { get; set; }
+
+        // 🔥 calculado automaticamente no controller
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalAmount { get; set; }
 

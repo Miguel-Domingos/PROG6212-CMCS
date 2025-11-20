@@ -20,7 +20,7 @@ namespace PROG6212_CMCS.Server.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // ---- ROLES ----
+            // ---- USERS (seed) ----
             modelBuilder.Entity<Role>().HasData(
                 new Role { RoleId = 1, RoleName = "Admin", AccessLevel = 1 },
                 new Role { RoleId = 2, RoleName = "AcademicManager", AccessLevel = 2 },
@@ -28,18 +28,18 @@ namespace PROG6212_CMCS.Server.Data
                 new Role { RoleId = 4, RoleName = "Lecturer", AccessLevel = 4 }
             );
 
-            // ---- USERS (seed) ----
-            var adminHash = BCrypt.Net.BCrypt.HashPassword("admin123");
-            var managerHash = BCrypt.Net.BCrypt.HashPassword("manager123");
-            var coordinatorHash = BCrypt.Net.BCrypt.HashPassword("coordinator123");
-            var lecturerHash = BCrypt.Net.BCrypt.HashPassword("lecturer123");
+           
+            var adminHash = BCrypt.Net.BCrypt.HashPassword("12345678");
+            var managerHash = BCrypt.Net.BCrypt.HashPassword("12345678");
+            var coordinatorHash = BCrypt.Net.BCrypt.HashPassword("12345678");
+            var lecturerHash = BCrypt.Net.BCrypt.HashPassword("12345678");
 
             modelBuilder.Entity<User>().HasData(
                 new User
                 {
                     UserId = 1,
-                    Name = "System Admin",
-                    Email = "admin@cmcs.com",
+                    Name = "Admin",
+                    Email = "admin@gmail.com",
                     PasswordHash = adminHash,
                     RoleId = 1
                 },
@@ -47,7 +47,7 @@ namespace PROG6212_CMCS.Server.Data
                 {
                     UserId = 2,
                     Name = "Academic Manager",
-                    Email = "manager@cmcs.com",
+                    Email = "manager@gmail.com",
                     PasswordHash = managerHash,
                     RoleId = 2
                 },
@@ -55,7 +55,7 @@ namespace PROG6212_CMCS.Server.Data
                 {
                     UserId = 3,
                     Name = "Programme Coordinator",
-                    Email = "coordinator@cmcs.com",
+                    Email = "coordinator@gmail.com",
                     PasswordHash = coordinatorHash,
                     RoleId = 3
                 },
@@ -63,7 +63,7 @@ namespace PROG6212_CMCS.Server.Data
                 {
                     UserId = 4,
                     Name = "Lecturer",
-                    Email = "lecturer@cmcs.com",
+                    Email = "lecturer@gmail.com",
                     PasswordHash = lecturerHash,
                     RoleId = 4
                 }
@@ -75,8 +75,7 @@ namespace PROG6212_CMCS.Server.Data
                 {
                     LecturerId = 1,
                     UserId = 4,
-                    BankDetails = "FNB - Acc: 1234567890",
-                    HourlyRate = 450.00m
+                    BankDetails = "ABSA - Acc: 0626673286",
                 }
             );
 

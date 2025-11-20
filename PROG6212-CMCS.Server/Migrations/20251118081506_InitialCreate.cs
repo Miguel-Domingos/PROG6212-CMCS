@@ -53,8 +53,7 @@ namespace PROG6212_CMCS.Server.Migrations
                     LecturerId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<int>(type: "INTEGER", nullable: false),
-                    BankDetails = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    HourlyRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    BankDetails = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,6 +75,7 @@ namespace PROG6212_CMCS.Server.Migrations
                     LecturerId = table.Column<int>(type: "INTEGER", nullable: false),
                     ClaimDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     HoursWorked = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    HourlyRate = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     Notes = table.Column<string>(type: "TEXT", nullable: true)
@@ -166,27 +166,27 @@ namespace PROG6212_CMCS.Server.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
-                values: new object[] { 1, "admin@cmcs.com", "System Admin", "$2a$11$TZOMQNvqAcYrfHwGbrvOl.7unq5tPF/Iv4z7csjG26bZElV5Swg6K", 1 });
+                values: new object[] { 1, "admin@gmail.com", "Admin", "$2a$11$LC70hkVjkSDMOyEAfWdEf.j2zF4spJcQ4ltFybJi74JyW4uB0WmlO", 1 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
-                values: new object[] { 2, "manager@cmcs.com", "Academic Manager", "$2a$11$GbDygJoNLGp941w3N87yNuLI8/dj5/YHIWLKVWPsHJOB5Fh8fGXh6", 2 });
+                values: new object[] { 2, "manager@gmail.com", "Academic Manager", "$2a$11$86OZcMZPNBlUIxK543zZleXkYhRtHnogmvjTgE5nY1YS41bimIggW", 2 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
-                values: new object[] { 3, "coordinator@cmcs.com", "Programme Coordinator", "$2a$11$ewYZ5PIxCNlFY7eVUWfZveqJqYeN9uUzc.pEBkvZKCnhoez7tEv02", 3 });
+                values: new object[] { 3, "coordinator@gmail.com", "Programme Coordinator", "$2a$11$S81MIziaHpTPJIVdxtSGdeteCc1OKtHU1lE6AxumWS1ypO3sfkEQS", 3 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "UserId", "Email", "Name", "PasswordHash", "RoleId" },
-                values: new object[] { 4, "lecturer@cmcs.com", "Lecturer", "$2a$11$FAU3ziEwhoFsSF1BiWzEFOZ4v/I01E82H4Kim4uyk2kpSyEk74oeW", 4 });
+                values: new object[] { 4, "lecturer@gmail.com", "Lecturer", "$2a$11$u65twpa4gMxvzzCy2IsgZOaSAKd2C95xovcxq63b47dmrGsqirdTC", 4 });
 
             migrationBuilder.InsertData(
                 table: "Lecturers",
-                columns: new[] { "LecturerId", "BankDetails", "HourlyRate", "UserId" },
-                values: new object[] { 1, "FNB - Acc: 1234567890", 450.00m, 4 });
+                columns: new[] { "LecturerId", "BankDetails", "UserId" },
+                values: new object[] { 1, "ABSA - Acc: 0626673286", 4 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClaimApprovals_ApproverId",

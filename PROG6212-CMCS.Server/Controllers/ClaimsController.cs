@@ -14,7 +14,7 @@ namespace PROG6212_CMCS.Server.Controllers
         private readonly ApplicationDbContext _context;
         public ClaimsController(ApplicationDbContext context) => _context = context;
 
-        // 🔹 1. Retorna todas as claims (admin ou coord)
+        // 1. Todas claims (ADMIN / COORD)
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -28,7 +28,7 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claims);
         }
 
-        // 🔹 2. Retorna apenas as claims do lecturer logado
+        // 2. Claims do lecturer logado
         [HttpGet("mine")]
         public IActionResult GetMine()
         {
@@ -48,7 +48,7 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claims);
         }
 
-        // 🔹 3. Retorna apenas claims pendentes (para coordenador)
+        // 3. Claims pendentes
         [HttpGet("pending")]
         public IActionResult GetPendingClaims()
         {
@@ -64,14 +64,22 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claims);
         }
 
-        // 🔹 4. Cria claim (para lecturer)
+        // 4. Criar claim (LECTURER)
         [HttpPost]
         public IActionResult Create(Claim claim)
         {
             var lecturer = _context.Lecturers.Find(claim.LecturerId);
-            if (lecturer == null) return BadRequest("Lecturer not found");
+            if (lecturer == null)
+                return BadRequest("Lecturer not found");
 
-            claim.TotalAmount = claim.HoursWorked * lecturer.HourlyRate;
+            if (claim.HourlyRate <= 0)
+                return BadRequest("HourlyRate must be greater than zero");
+
+            if(claim.HoursWorked <= 0)
+                return BadRequest("HoursWorked must be greater than zero");
+
+            claim.TotalAmount = claim.HoursWorked * claim.HourlyRate;
+
             claim.Status = ClaimStatus.Pending;
             claim.ClaimDate = DateTime.UtcNow;
 
@@ -81,12 +89,13 @@ namespace PROG6212_CMCS.Server.Controllers
             return CreatedAtAction(nameof(GetById), new { id = claim.ClaimId }, claim);
         }
 
-        // 🔹 5. Retorna claim específica
+        // 5. Claim específica
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var claim = _context.Claims
                 .Include(c => c.Lecturer)
+                    .ThenInclude(l => l.User)
                 .Include(c => c.Documents)
                 .Include(c => c.Approvals)
                 .FirstOrDefault(c => c.ClaimId == id);
@@ -95,7 +104,7 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claim);
         }
 
-        // 🔹 6. Aprovar claim (usando JWT)
+        // 6. Aprovar claim
         [HttpPost("{id}/approve")]
         public IActionResult ApproveClaim(int id, [FromBody] string? comments = null)
         {
@@ -123,7 +132,7 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(new { message = "Claim approved successfully", claim });
         }
 
-        // 🔹 7. Rejeitar claim (usando JWT)
+        // 7. Rejeitar claim
         [HttpPost("{id}/reject")]
         public IActionResult RejectClaim(int id, [FromBody] string? comments = null)
         {
@@ -151,7 +160,6 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(new { message = "Claim rejected successfully", claim });
         }
 
-        // 🔹 8. Helper: pega ID do usuário logado
         private int? GetUserIdFromToken()
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "id")?.Value;

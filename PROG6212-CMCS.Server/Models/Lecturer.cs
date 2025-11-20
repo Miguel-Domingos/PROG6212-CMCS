@@ -20,10 +20,6 @@ namespace PROG6212_CMCS.Server.Models
         [MaxLength(200)]
         public string BankDetails { get; set; } = string.Empty;
 
-        // taxa por hora
-        [Column(TypeName = "decimal(18,2)")]
-        public decimal HourlyRate { get; set; }
-
         [JsonIgnore]
         public ICollection<Claim>? Claims { get; set; }
     }

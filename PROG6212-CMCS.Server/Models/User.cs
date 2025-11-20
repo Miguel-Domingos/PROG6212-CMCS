@@ -1,6 +1,7 @@
 ﻿// Models/User.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace PROG6212_CMCS.Server.Models
 {
@@ -15,7 +16,7 @@ namespace PROG6212_CMCS.Server.Models
         [Required, MaxLength(150)]
         public string Email { get; set; } = string.Empty;
 
-        // Para POE basta um hash simples; não implementar auth completa se não for necessário
+        [JsonIgnore]
         public string? PasswordHash { get; set; }
 
         [ForeignKey(nameof(Role))]
