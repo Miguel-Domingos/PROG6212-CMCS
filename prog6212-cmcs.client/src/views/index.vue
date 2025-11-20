@@ -32,10 +32,11 @@
 
     </UHeader>
 
-    <UMain class="mt-4">
+    <UMain class="pt-4">
 
       <AcademicAndCoordinatorPageView v-if="user.role === 'AcademicManager' || user.role === 'ProgrammeCoordinator'" />
       <LecturerPageView v-else-if="user.role === 'Lecturer'" />
+      <AdminPageView v-else-if="user.role === 'Admin'" />
       <div v-else>
         <p class="text-center text-lg">Unauthorized Role: {{user.role}}</p>
       </div>

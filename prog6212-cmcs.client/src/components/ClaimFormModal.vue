@@ -1,29 +1,34 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref, watch, computed } from 'vue'
   import { useApi } from '@/composables/useApi'
+  import { useAuthStore } from "@/stores/auth";
 
   const open = ref(false)
   const claimTitle = ref('')
   const notes = ref('')
   const hoursWorked = ref<number>(1)
+  const hourlyRate = ref<number>(10)
   const files = ref<File[]>([])
   const loading = ref(false)
   const uploadedFile = ref<File | null>(null)
 
   const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
 
+  const canSubmit = computed(()=> !!claimTitle.value && !!notes.value && !!hourlyRate.value
+  && !!hoursWorked.value)
   const api = useApi()
+  const {user} = useAuthStore()
 
   async function submitClaim() {
     try {
-      // 1️⃣ Criar o claim
       const claim = await api('/claims', {
         method: 'POST',
         body: {
           title: claimTitle.value,
           notes: notes.value,
           hoursWorked: hoursWorked.value,
-          LecturerId: 1,
+          hourlyRate: hourlyRate.value,
+          LecturerId: user.lecturerProfile.lecturerId,
         }
       })
 
@@ -60,6 +65,7 @@
     open.value = false
     claimTitle.value = ''
     notes.value = ''
+    hourlyRate.value = null
     hoursWorked.value = null
     files.value = []
     uploadedFile.value = null
@@ -101,18 +107,21 @@
           <UInputNumber v-model="hoursWorked" :min="1" :max="5000" orientation="vertical" class="w-full" />
         </UFormField>
 
+        <UFormField label="Hours Rate">
+          <UInputNumber v-model="hourlyRate" :min="1" :max="5000" orientation="vertical" class="w-full" />
+        </UFormField>
+
         <UFormField label="Documents">
           <UFileUpload accept=".pdf,.docx,.doc,.xlsx"
                        layout="list"
                        label="Drop your file here"
                        description="PDF, DOC, DOCX or XLSX (max. 2MB)"
                        class="w-full min-h-20"
-                       v-model="uploadedFile"
-                      />
+                       v-model="uploadedFile" />
         </UFormField>
 
         <div class="w-full flex gap-2">
-          <UButton :loading="loading" @click="submitClaim" color="neutral" variant="solid" label="Submit Claim" class="w-full flex justify-center text-center" />
+          <UButton :disabled="!canSubmit" :loading="loading" @click="submitClaim" color="neutral" variant="solid" label="Submit Claim" class="w-full flex justify-center text-center" />
           <UButton @click="closeModal" color="neutral" variant="outline" label="Cancel" />
         </div>
       </div>

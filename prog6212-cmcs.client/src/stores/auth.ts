@@ -8,6 +8,11 @@ interface User {
   name: string;
   email: string;
   role: string;
+  lecturerProfile:{
+    lecturerId: number
+    userId: number
+    bankDetails: string
+  }
 }
 
 interface LoginResponse {

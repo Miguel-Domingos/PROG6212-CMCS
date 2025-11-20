@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  cmcs-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cmcs-container
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=DataSource=/app/Data/cmcs.db
+    volumes:
+      - sqlite_data:/app/Data
+    restart: unless-stopped
+    networks:
+      - cmcs-network
+
+volumes:
+  sqlite_data:
+    driver: local
+
+networks:
+  cmcs-network:
+    driver: bridge
