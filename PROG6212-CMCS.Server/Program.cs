@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using PROG6212_CMCS.Server.Data;
+using PROG6212_CMCS.Server.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
-        policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        policy
+            .WithOrigins("https://localhost:50253") 
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+        );
 });
 
 // JWT Authentication
@@ -46,9 +52,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// Notifications
+builder.Services.AddSignalR();
+
+
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 
 var app = builder.Build();
 
@@ -75,5 +86,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
+ 
+app.MapHub<NotificationsHub>("/hubs/notifications");
 
 app.Run();

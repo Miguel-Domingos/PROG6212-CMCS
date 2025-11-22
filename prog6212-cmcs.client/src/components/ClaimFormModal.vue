@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, computed } from 'vue'
+  import { ref, watch, computed, defineEmits } from 'vue'
   import { useApi } from '@/composables/useApi'
   import { useAuthStore } from "@/stores/auth";
 
@@ -11,6 +11,7 @@
   const files = ref<File[]>([])
   const loading = ref(false)
   const uploadedFile = ref<File | null>(null)
+  const emits = defineEmits(['created'])
 
   const MAX_FILE_SIZE = 2 * 1024 * 1024 // 2MB
 
@@ -47,6 +48,7 @@
         });
       }
 
+      emits('created')
       closeModal()
       useToast().add({
         title: "Claim Submitted",
@@ -71,7 +73,7 @@
     uploadedFile.value = null
   }
 
-  
+
 
   watch(uploadedFile, ()=>{{
     if(uploadedFile.value) {

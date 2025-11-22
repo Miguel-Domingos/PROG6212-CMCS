@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using PROG6212_CMCS.Server.Data;
+using PROG6212_CMCS.Server.Hubs;
 using PROG6212_CMCS.Server.Models;
 
 namespace PROG6212_CMCS.Server.Controllers
@@ -12,15 +14,22 @@ namespace PROG6212_CMCS.Server.Controllers
     public class ClaimsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public ClaimsController(ApplicationDbContext context) => _context = context;
+        private readonly IHubContext<NotificationsHub> _hub;
 
-        // 1. Todas claims (ADMIN / COORD)
+        public ClaimsController(ApplicationDbContext context, IHubContext<NotificationsHub> hub)
+        {
+            _context = context;
+            _hub = hub;
+        }
+
+        // =====================
+        // 1. Todas claims
+        // =====================
         [HttpGet]
         public IActionResult GetAll()
         {
             var claims = _context.Claims
-                .Include(c => c.Lecturer)
-                    .ThenInclude(l => l.User)
+                .Include(c => c.Lecturer).ThenInclude(l => l.User)
                 .Include(c => c.Documents)
                 .Include(c => c.Approvals)
                 .ToList();
@@ -28,7 +37,9 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claims);
         }
 
+        // =====================
         // 2. Claims do lecturer logado
+        // =====================
         [HttpGet("mine")]
         public IActionResult GetMine()
         {
@@ -38,8 +49,7 @@ namespace PROG6212_CMCS.Server.Controllers
             var userId = int.Parse(userIdClaim);
 
             var claims = _context.Claims
-                .Include(c => c.Lecturer)
-                    .ThenInclude(l => l.User)
+                .Include(c => c.Lecturer).ThenInclude(l => l.User)
                 .Include(c => c.Documents)
                 .Include(c => c.Approvals)
                 .Where(c => c.Lecturer.UserId == userId)
@@ -48,13 +58,14 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claims);
         }
 
+        // =====================
         // 3. Claims pendentes
+        // =====================
         [HttpGet("pending")]
         public IActionResult GetPendingClaims()
         {
             var claims = _context.Claims
-                .Include(c => c.Lecturer)
-                    .ThenInclude(l => l.User)
+                .Include(c => c.Lecturer).ThenInclude(l => l.User)
                 .Include(c => c.Documents)
                 .Include(c => c.Approvals)
                 .Where(c => c.Status == ClaimStatus.Pending)
@@ -64,7 +75,9 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claims);
         }
 
+        // =====================
         // 4. Criar claim (LECTURER)
+        // =====================
         [HttpPost]
         public IActionResult Create(Claim claim)
         {
@@ -75,11 +88,10 @@ namespace PROG6212_CMCS.Server.Controllers
             if (claim.HourlyRate <= 0)
                 return BadRequest("HourlyRate must be greater than zero");
 
-            if(claim.HoursWorked <= 0)
+            if (claim.HoursWorked <= 0)
                 return BadRequest("HoursWorked must be greater than zero");
 
             claim.TotalAmount = claim.HoursWorked * claim.HourlyRate;
-
             claim.Status = ClaimStatus.Pending;
             claim.ClaimDate = DateTime.UtcNow;
 
@@ -89,13 +101,14 @@ namespace PROG6212_CMCS.Server.Controllers
             return CreatedAtAction(nameof(GetById), new { id = claim.ClaimId }, claim);
         }
 
+        // =====================
         // 5. Claim específica
+        // =====================
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
             var claim = _context.Claims
-                .Include(c => c.Lecturer)
-                    .ThenInclude(l => l.User)
+                .Include(c => c.Lecturer).ThenInclude(l => l.User)
                 .Include(c => c.Documents)
                 .Include(c => c.Approvals)
                 .FirstOrDefault(c => c.ClaimId == id);
@@ -104,16 +117,19 @@ namespace PROG6212_CMCS.Server.Controllers
             return Ok(claim);
         }
 
-        // 6. Aprovar claim
+        // =====================
+        // 6. APROVAR claim
+        // =====================
         [HttpPost("{id}/approve")]
-        public IActionResult ApproveClaim(int id, [FromBody] string? comments = null)
+        public async Task<IActionResult> ApproveClaim(int id, [FromBody] string? comments = null)
         {
             var userId = GetUserIdFromToken();
             if (userId == null) return Unauthorized();
 
-            var claim = _context.Claims.Find(id);
-            if (claim == null) return NotFound();
+            var claim = _context.Claims
+                .Include(c => c.Lecturer).FirstOrDefault(c => c.ClaimId == id);
 
+            if (claim == null) return NotFound();
             if (claim.Status != ClaimStatus.Pending)
                 return BadRequest("Only pending claims can be approved.");
 
@@ -129,19 +145,32 @@ namespace PROG6212_CMCS.Server.Controllers
             });
 
             _context.SaveChanges();
+
+            // 🔔 NOTIFICA APENAS O DONO DO CLAIM
+            await _hub.Clients.All
+                .SendAsync("claimUpdated", new
+                {
+                    claimId = claim.ClaimId,
+                    status = "Approved",
+                    message = "Your claim has been approved."
+                });
+
             return Ok(new { message = "Claim approved successfully", claim });
         }
 
-        // 7. Rejeitar claim
+        // =====================
+        // 7. REJEITAR claim
+        // =====================
         [HttpPost("{id}/reject")]
-        public IActionResult RejectClaim(int id, [FromBody] string? comments = null)
+        public async Task<IActionResult> RejectClaim(int id, [FromBody] string? comments = null)
         {
             var userId = GetUserIdFromToken();
             if (userId == null) return Unauthorized();
 
-            var claim = _context.Claims.Find(id);
-            if (claim == null) return NotFound();
+            var claim = _context.Claims
+                .Include(c => c.Lecturer).FirstOrDefault(c => c.ClaimId == id);
 
+            if (claim == null) return NotFound();
             if (claim.Status != ClaimStatus.Pending)
                 return BadRequest("Only pending claims can be rejected.");
 
@@ -157,6 +186,16 @@ namespace PROG6212_CMCS.Server.Controllers
             });
 
             _context.SaveChanges();
+
+            // 🔔 NOTIFICA APENAS O DONO DO CLAIM
+            await _hub.Clients.All
+                .SendAsync("claimUpdated", new
+                {
+                    claimId = claim.ClaimId,
+                    status = "Rejected",
+                    message = "Your claim has been rejected."
+                });
+
             return Ok(new { message = "Claim rejected successfully", claim });
         }
 
